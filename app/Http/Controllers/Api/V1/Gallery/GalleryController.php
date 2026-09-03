@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Api\V1\Gallery;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreGalleryRequest;
-use App\Http\Requests\UpdateGalleryRequest;
+use App\Http\Requests\Api\V1\Gallery\StoreGalleryRequest;
+use App\Http\Requests\Api\V1\Gallery\UpdateGalleryRequest;
 use App\Http\Resources\Api\V1\GalleryResource;
 use App\Models\Gallery;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
@@ -35,6 +34,7 @@ class GalleryController extends Controller
      */
     public function store(StoreGalleryRequest $request): GalleryResource
     {
+        logger($request);
         $gallery = $request->user()->galleries()->create($request->validated());
 
         return new GalleryResource($gallery->load('user')->loadCount('images'));

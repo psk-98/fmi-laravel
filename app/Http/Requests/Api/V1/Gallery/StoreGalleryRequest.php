@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api\V1\Gallery;
 
 use App\Models\Gallery;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateGalleryRequest extends FormRequest
+class StoreGalleryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('update', $this->route('gallery')) ?? false;
+        return $this->user()?->can('create', Gallery::class) ?? false;
     }
 
     /**
@@ -25,8 +25,8 @@ class UpdateGalleryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'max:255'],
-            'description' => ['sometimes', 'string', 'max:2000'],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:2000'],
             'visibility' => ['sometimes', Rule::in([Gallery::VISIBILITY_PRIVATE, Gallery::VISIBILITY_PUBLIC])],
         ];
     }
