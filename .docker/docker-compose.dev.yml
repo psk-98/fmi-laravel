@@ -1,0 +1,17 @@
+services:
+  db:
+    image: pgvector/pgvector:pg18-trixie
+    container_name: fmi-db
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql
+    ports:
+      - "6543:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+volumes:
+  pgdata:
+    driver: local

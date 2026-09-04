@@ -2,6 +2,7 @@
 
 namespace App\Domain\Gallery\Actions;
 
+use App\Jobs\ProcessGalleryImage;
 use App\Models\Gallery;
 use App\Models\GalleryImage;
 use App\Models\User;
@@ -43,7 +44,7 @@ class CreateGalleryImageAction
             throw $exception;
         }
 
-        // ProcessGalleryImage::dispatch($image->id)->afterCommit();
+        ProcessGalleryImage::dispatch($image->id)->afterCommit();
 
         return $image;
     }

@@ -13,7 +13,8 @@ class GalleryImagePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->canModerate();
+        // return $user->canModerate();
+        return true;
     }
 
     /**
@@ -21,8 +22,7 @@ class GalleryImagePolicy
      */
     public function view(User $user, GalleryImage $galleryImage): bool
     {
-        return $user->canModerate()
-            || $galleryImage->gallery()->whereBelongsTo($user)->exists()
+        return  $galleryImage->gallery()->whereBelongsTo($user)->exists()
             || ($galleryImage->is_public && $galleryImage->gallery()->where('visibility', Gallery::VISIBILITY_PUBLIC)->exists());
     }
 
@@ -39,7 +39,7 @@ class GalleryImagePolicy
      */
     public function update(User $user, GalleryImage $galleryImage): bool
     {
-        return $user->canModerate() || $galleryImage->gallery()->whereBelongsTo($user)->exists();
+        return  $galleryImage->gallery()->whereBelongsTo($user)->exists();
     }
 
     /**

@@ -45,7 +45,7 @@ class GalleryController extends Controller
      */
     public function show(Gallery $gallery): GalleryResource
     {
-        abort_unless($gallery->visibility === Gallery::VISIBILITY_PUBLIC, 404);
+        // abort_unless($gallery->visibility === Gallery::VISIBILITY_PUBLIC, 404);
 
         $gallery->load([
             'user:id,name',

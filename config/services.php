@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'image_processor' => [
+        'url' => env('IMAGE_PROCESSOR_URL', 'http://127.0.0.1:8001'),
+        'api_token' => env('IMAGE_PROCESSOR_API_TOKEN', 'change-me'),
+        'callback_token' => env('IMAGE_PROCESSOR_CALLBACK_TOKEN'),
+        'disk' => env('IMAGE_PROCESSOR_DISK', 'public'),
+        'model' => env('IMAGE_PROCESSOR_MODEL', 'opencv-hog-face-v1'),
+        'embedding_dimensions' => (int) env('IMAGE_PROCESSOR_EMBEDDING_DIMENSIONS', 512),
+        'max_faces' => (int) env('IMAGE_PROCESSOR_MAX_FACES', 20),
+        'timeout' => (int) env('IMAGE_PROCESSOR_TIMEOUT', 45),
+    ],
 ];

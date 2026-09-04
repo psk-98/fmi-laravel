@@ -12,7 +12,8 @@ class GalleryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->canModerate();
+        // return $user->canModerate();
+        return true;
     }
 
     /**
@@ -20,8 +21,7 @@ class GalleryPolicy
      */
     public function view(User $user, Gallery $gallery): bool
     {
-        return $user->canModerate()
-            || $gallery->user_id === $user->id
+        return $gallery->user_id === $user->id
             || $gallery->visibility === Gallery::VISIBILITY_PUBLIC;
     }
 
