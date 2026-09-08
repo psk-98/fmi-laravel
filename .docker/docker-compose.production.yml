@@ -1,0 +1,53 @@
+networks:
+  fmi-laravel:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
+
+services:
+  app:
+    build:
+      args:
+        user: fmi-laravel
+        uid: 1000
+      context: ./.docker/app
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./:/app
+      # - ./.docker/app/php.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - fmi-laravel
+
+  # vetro-whatsapp-web:
+  #   image: nginx
+  #   container_name: vetro-whatsapp-web
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8000:80"
+  #   networks:
+  #     - vetro-whatsapp
+  #   volumes:
+  #     - ./:/var/www
+  #     - ./.docker/nginx:/etc/nginx/conf.d
+
+  db:
+    networks:
+      - fmi-laravel
+    image: pgvector/pgvector:pg18-trixie
+    container_name: fmi-db
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql
+    ports:
+      - "127.0.0.1:6543:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: pg18
