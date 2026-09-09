@@ -14,11 +14,11 @@ class MeGalleryImagesController extends Controller
      */
     public function __invoke(Gallery $gallery): GalleryResource
     {
-        // Gate::authorize('update', $gallery);
+        Gate::authorize('update', $gallery);
 
         $gallery->load([
             'user:id,name,email,role,created_at',
-            'images' => fn($query) => $query
+            'images' => fn ($query) => $query
                 ->withCount('embeddings')
                 ->latest(),
         ])->loadCount('images');

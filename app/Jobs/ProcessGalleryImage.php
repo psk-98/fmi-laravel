@@ -9,6 +9,8 @@ use App\Models\GalleryImage;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Str;
+use Throwable;
 
 class ProcessGalleryImage implements ShouldBeUnique, ShouldQueue
 {
@@ -43,5 +45,13 @@ class ProcessGalleryImage implements ShouldBeUnique, ShouldQueue
 
         $result = app(ProcessImageAction::class)->execute($image);
         app(StoreImageEmbedding::class)->execute($image, $result);
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        GalleryImage::query()->whereKey($this->galleryImageId)->update([
+            'processing_status' => ProcessingStatus::Failed,
+            'processing_error' => Str::limit($exception->getMessage(), 2000),
+        ]);
     }
 }

@@ -6,8 +6,12 @@ use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\RegisterUserController;
 use App\Http\Controllers\Api\V1\Gallery\GalleryController;
 use App\Http\Controllers\Api\V1\Gallery\GalleryImageController;
+use App\Http\Controllers\Api\V1\Gallery\GalleryImageSearchController;
 use App\Http\Controllers\Api\V1\Gallery\MeGalleriesController;
+use App\Http\Controllers\Api\V1\Gallery\MeGalleryImageController;
 use App\Http\Controllers\Api\V1\Gallery\MeGalleryImagesController;
+use App\Http\Controllers\Api\V1\Gallery\ReprocessGalleryImageController;
+use App\Http\Controllers\Api\V1\Gallery\ReprocessGalleryImagesController;
 use App\Http\Controllers\Api\V1\Processor\ImageResultController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,14 +34,16 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('auth/logout', LogoutController::class)->name('auth.logout');
         Route::get('me/galleries', MeGalleriesController::class)->name('galleries.mine');
         Route::get('me/galleries/{gallery}', MeGalleryImagesController::class)->name('galleries.owned');
+        Route::get('me/images/{galleryImage}', MeGalleryImageController::class)->name('images.owned');
         Route::post('galleries', [GalleryController::class, 'store'])->name('galleries.store');
         Route::patch('galleries/{gallery}', [GalleryController::class, 'update'])->name('galleries.update');
         Route::delete('galleries/{gallery}', [GalleryController::class, 'destroy'])->name('galleries.destroy');
         Route::post('galleries/{gallery}/images', [GalleryImageController::class, 'store'])->name('galleries.images.store');
+        Route::post('galleries/{gallery}/images/search', GalleryImageSearchController::class)->name('galleries.images.search');
+        Route::post('galleries/{gallery}/images/reprocess', ReprocessGalleryImagesController::class)->name('galleries.images.reprocess');
+        Route::post('images/{galleryImage}/reprocess', ReprocessGalleryImageController::class)->name('images.reprocess');
         Route::delete('images/{galleryImage}', [GalleryImageController::class, 'destroy'])->name('images.destroy');
-        // Route::post('images/search', ImageSearchController::class)->name('images.search');
     });
-
 
     Route::patch('processor/images/{galleryImage}', ImageResultController::class)
         ->middleware(['image.processor', 'throttle:processor'])

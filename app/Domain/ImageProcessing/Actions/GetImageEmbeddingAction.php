@@ -20,7 +20,7 @@ class GetImageEmbeddingAction
         try {
             $response = $this->request()
                 ->attach('image', $stream, $image->getClientOriginalName())
-                ->post('v1/images/embed')
+                ->post('api/v1/images/embed')
                 ->throw();
         } finally {
             fclose($stream);
@@ -31,7 +31,7 @@ class GetImageEmbeddingAction
 
     private function request(): PendingRequest
     {
-        $request = Http::baseUrl(rtrim((string) config('services.image_processor.url'), '/') . '/')
+        $request = Http::baseUrl(rtrim((string) config('services.image_processor.url'), '/').'/')
             ->acceptJson()
             ->connectTimeout(5)
             ->timeout((int) config('services.image_processor.timeout'))

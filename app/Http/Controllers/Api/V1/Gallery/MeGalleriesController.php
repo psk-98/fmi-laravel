@@ -16,7 +16,13 @@ class MeGalleriesController extends Controller
     {
         $galleries = $request->user()
             ->galleries()
-            ->with('user:id,name')
+            ->with([
+                'user:id,name,email,role,created_at',
+                'images' => fn($query) => $query
+                    ->withCount('embeddings')
+                    ->oldest()
+                    ->limit(1),
+            ])
             ->withCount('images')
             ->latest()
             ->paginate();

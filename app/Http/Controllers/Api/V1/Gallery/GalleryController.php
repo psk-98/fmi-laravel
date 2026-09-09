@@ -20,8 +20,17 @@ class GalleryController extends Controller
     {
         $galleries = Gallery::query()
             ->select(['id', 'user_id', 'name', 'description', 'uid', 'visibility', 'created_at', 'updated_at'])
-            ->with('user:id,name')
-            ->withCount('images')
+            ->with([
+                'user:id,name',
+                'images' => fn($query) => $query
+                    ->oldest()
+                    ->limit(1),
+            ])
+            ->withCount([
+                'images' => fn($query) => $query
+                    ->where('is_public', true)
+                    ->where('processing_status', 'processed'),
+            ])
             ->where('visibility', Gallery::VISIBILITY_PUBLIC)
             ->latest()
             ->paginate();
@@ -34,7 +43,6 @@ class GalleryController extends Controller
      */
     public function store(StoreGalleryRequest $request): GalleryResource
     {
-        logger($request);
         $gallery = $request->user()->galleries()->create($request->validated());
 
         return new GalleryResource($gallery->load('user')->loadCount('images'));
@@ -45,7 +53,7 @@ class GalleryController extends Controller
      */
     public function show(Gallery $gallery): GalleryResource
     {
-        // abort_unless($gallery->visibility === Gallery::VISIBILITY_PUBLIC, 404);
+        abort_unless($gallery->visibility === Gallery::VISIBILITY_PUBLIC, 404);
 
         $gallery->load([
             'user:id,name',

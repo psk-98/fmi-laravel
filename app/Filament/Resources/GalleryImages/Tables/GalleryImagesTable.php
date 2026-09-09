@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\GalleryImages\Tables;
 
-use App\Domain\Gallery\Enums\ProcessingStatus;
+use App\Domain\Gallery\Actions\QueueGalleryImageForProcessingAction;
 use App\Filament\Resources\GalleryImages\GalleryImageResource;
 use App\Jobs\ProcessGalleryImage;
 use App\Models\GalleryImage;
@@ -60,11 +60,7 @@ class GalleryImagesTable
                     ->icon(Heroicon::OutlinedArrowPath)
                     ->requiresConfirmation()
                     ->action(function (GalleryImage $record): void {
-                        $record->update([
-                            'processing_status' => ProcessingStatus::Pending,
-                            'processing_error' => null,
-                        ]);
-                        ProcessGalleryImage::dispatch($record->id);
+                        app(QueueGalleryImageForProcessingAction::class)->execute($record);
                     }),
             ])
             ->toolbarActions([

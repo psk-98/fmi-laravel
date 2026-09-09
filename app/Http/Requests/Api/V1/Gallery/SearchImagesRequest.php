@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\Gallery;
 
+use App\Models\Gallery;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
@@ -13,7 +14,10 @@ class SearchImagesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        $gallery = $this->route('gallery');
+
+        return $gallery instanceof Gallery
+            && ($this->user()?->can('update', $gallery) ?? false);
     }
 
     /**

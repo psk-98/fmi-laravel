@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Casts\VectorCast;
+use App\Domain\Gallery\Casts\VectorCast;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Model;
