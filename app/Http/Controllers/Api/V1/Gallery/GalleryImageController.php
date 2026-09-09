@@ -40,7 +40,6 @@ class GalleryImageController extends Controller
         StoreGalleryImagesRequest $request,
         Gallery $gallery,
     ): AnonymousResourceCollection {
-        logger($request->file('images'));
         $uploadedImages = $request->file('images');
 
         abort_unless(is_array($uploadedImages), 422);
@@ -62,13 +61,12 @@ class GalleryImageController extends Controller
     {
         $galleryImage->load('gallery.user')->loadCount('embeddings');
 
-        // abort_unless(
-        //     $galleryImage->is_public
-        //         && $galleryImage->moderation_status->value === 'approved'
-        //         && $galleryImage->processing_status->value === 'processed'
-        //         && $galleryImage->gallery->visibility === Gallery::VISIBILITY_PUBLIC,
-        //     404,
-        // );
+        abort_unless(
+            $galleryImage->is_public
+                && $galleryImage->processing_status->value === 'processed'
+                && $galleryImage->gallery->visibility === Gallery::VISIBILITY_PUBLIC,
+            404,
+        );
 
         return new GalleryImageResource($galleryImage);
     }
