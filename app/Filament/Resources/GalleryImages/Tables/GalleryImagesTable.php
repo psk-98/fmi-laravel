@@ -3,10 +3,11 @@
 namespace App\Filament\Resources\GalleryImages\Tables;
 
 use App\Domain\Gallery\Actions\QueueGalleryImageForProcessingAction;
+use App\Domain\Gallery\Enums\ProcessingStatus;
 use App\Filament\Resources\GalleryImages\GalleryImageResource;
-use App\Jobs\ProcessGalleryImage;
 use App\Models\GalleryImage;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -49,19 +50,21 @@ class GalleryImagesTable
             ])
             ->defaultSort('created_at', 'desc')
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                Action::make('similar')
-                    ->label('Find similar')
-                    ->icon(Heroicon::OutlinedMagnifyingGlass)
-                    ->url(fn(GalleryImage $record): string => GalleryImageResource::getUrl('similar', ['record' => $record]))
-                    ->visible(fn(GalleryImage $record): bool => $record->embeddings_count > 0),
-                Action::make('reprocess')
-                    ->icon(Heroicon::OutlinedArrowPath)
-                    ->requiresConfirmation()
-                    ->action(function (GalleryImage $record): void {
-                        app(QueueGalleryImageForProcessingAction::class)->execute($record);
-                    }),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    Action::make('similar')
+                        ->label('Find similar')
+                        ->icon(Heroicon::OutlinedMagnifyingGlass)
+                        ->url(fn(GalleryImage $record): string => GalleryImageResource::getUrl('similar', ['record' => $record]))
+                        ->visible(fn(GalleryImage $record): bool => $record->embeddings_count > 0),
+                    Action::make('reprocess')
+                        ->icon(Heroicon::OutlinedArrowPath)
+                        ->requiresConfirmation()
+                        ->action(function (GalleryImage $record): void {
+                            app(QueueGalleryImageForProcessingAction::class)->execute($record);
+                        }),
+                ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

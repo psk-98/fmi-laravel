@@ -29,7 +29,6 @@ class GalleryImageResource extends JsonResource
             'description' => $this->description,
             'face_count' => $this->whenCounted('embeddings'),
             'processing_status' => $this->processing_status?->value,
-            'moderation_status' => $this->moderation_status?->value,
             'is_public' => $this->is_public,
             'gallery' => new GalleryResource($this->whenLoaded('gallery')),
             'processed_at' => $this->processed_at,

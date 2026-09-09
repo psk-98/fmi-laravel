@@ -17,7 +17,7 @@ class MeGalleriesController extends Controller
         $galleries = $request->user()
             ->galleries()
             ->with([
-                'user:id,name,email,role,created_at',
+                'user:id,name',
                 'images' => fn($query) => $query
                     ->withCount('embeddings')
                     ->oldest()
