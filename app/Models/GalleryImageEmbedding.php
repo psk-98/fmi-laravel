@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Domain\Gallery\Casts\VectorCast;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Casts\AsVector;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -26,7 +26,7 @@ class GalleryImageEmbedding extends Model
     protected function casts(): array
     {
         return [
-            'embedding' => VectorCast::class,
+            'embedding' => AsVector::class,
             'bounding_box' => 'array',
             'detection_score' => 'float',
             'metadata' => 'array',

@@ -22,7 +22,7 @@ class GalleryImagePolicy
      */
     public function view(User $user, GalleryImage $galleryImage): bool
     {
-        return  $galleryImage->gallery()->whereBelongsTo($user)->exists()
+        return $user->isAdmin() || $galleryImage->gallery()->whereBelongsTo($user)->exists()
             || ($galleryImage->is_public && $galleryImage->gallery()->where('visibility', Gallery::VISIBILITY_PUBLIC)->exists());
     }
 
@@ -39,7 +39,7 @@ class GalleryImagePolicy
      */
     public function update(User $user, GalleryImage $galleryImage): bool
     {
-        return  $galleryImage->gallery()->whereBelongsTo($user)->exists();
+        return $user->isAdmin() || $galleryImage->gallery()->whereBelongsTo($user)->exists();
     }
 
     /**

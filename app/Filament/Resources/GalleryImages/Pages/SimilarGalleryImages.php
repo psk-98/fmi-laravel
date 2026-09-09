@@ -40,7 +40,7 @@ class SimilarGalleryImages extends Page implements HasTable
 
     public function getTitle(): string
     {
-        return 'Images similar to ' . $this->getRecordTitle();
+        return 'Images similar to '.$this->getRecordTitle();
     }
 
     public function table(Table $table): Table
@@ -52,26 +52,28 @@ class SimilarGalleryImages extends Page implements HasTable
 
         $image->loadMissing('embeddings');
         $embeddings = $image->embeddings->pluck('embedding')->all();
-        $query = $embeddings === []
-            ? GalleryImage::query()->whereRaw('1 = 0')
-            : $this->similaritySearch->queryMany($embeddings, $user, true, $image->id);
+        $query = $this->similaritySearch->queryMany(
+            embeddings: $embeddings,
+            user: $user,
+            includePrivate: $user->isAdmin(),
+            excludeImageId: $image->id,
+        );
 
         return $table
             ->query($query)
             ->columns([
                 ImageColumn::make('path')
                     ->label('Image')
-                    ->disk(fn(GalleryImage $record): string => $record->disk)
+                    ->disk(fn (GalleryImage $record): string => $record->disk)
                     ->square(),
-                TextColumn::make('celebrity_name')->label('Celebrity')->placeholder('Unknown'),
                 TextColumn::make('gallery.user.name')->label('Owner'),
                 TextColumn::make('gallery.name')->label('Gallery'),
                 TextColumn::make('similarity')
                     ->label('Match')
-                    ->formatStateUsing(fn(float $state): string => number_format($state * 100, 2) . '%')
+                    ->formatStateUsing(fn (float $state): string => number_format($state * 100, 2).'%')
                     ->sortable(),
             ])
-            ->recordUrl(fn(GalleryImage $record): string => GalleryImageResource::getUrl('view', ['record' => $record]))
+            ->recordUrl(fn (GalleryImage $record): string => GalleryImageResource::getUrl('view', ['record' => $record]))
             ->paginated([10, 25, 50]);
     }
 }
