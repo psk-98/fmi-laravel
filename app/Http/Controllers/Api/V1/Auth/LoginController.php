@@ -27,6 +27,7 @@ class LoginController extends Controller
         }
 
         $token = $user->createToken($credentials['device_name'] ?? 'frontend')->plainTextToken;
+        $user->loadSum('galleryImages as storage_used_bytes', 'file_size');
 
         return response()->json([
             'token' => $token,

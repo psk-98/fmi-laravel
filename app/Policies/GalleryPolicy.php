@@ -46,8 +46,7 @@ class GalleryPolicy
      */
     public function delete(User $user, Gallery $gallery): bool
     {
-        return ($user->isAdmin() || $gallery->user_id === $user->id)
-            && $gallery->images()->doesntExist();
+        return $user->isAdmin() || $gallery->user_id === $user->id;
     }
 
     /**

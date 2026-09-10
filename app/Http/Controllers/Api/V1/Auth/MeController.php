@@ -13,6 +13,9 @@ class MeController extends Controller
      */
     public function __invoke(Request $request): UserResource
     {
-        return new UserResource($request->user());
+        $user = $request->user();
+        $user->loadSum('galleryImages as storage_used_bytes', 'file_size');
+
+        return new UserResource($user);
     }
 }

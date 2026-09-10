@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
-
 #[Fillable(['user_id', 'name', 'description', 'uid', 'visibility'])]
 class Gallery extends Model
 {
@@ -24,6 +23,12 @@ class Gallery extends Model
     {
         static::creating(function (Gallery $gallery): void {
             $gallery->uid ??= (string) Str::uuid();
+        });
+
+        static::deleting(function (Gallery $gallery): void {
+            foreach ($gallery->images()->lazyById() as $image) {
+                $image->delete();
+            }
         });
     }
 

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -20,11 +21,28 @@ use Laravel\Sanctum\HasApiTokens;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
+    public const DEFAULT_STORAGE_QUOTA_BYTES = 1_073_741_824;
+
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
+
+    protected $attributes = [
+        'storage_quota_bytes' => self::DEFAULT_STORAGE_QUOTA_BYTES,
+    ];
+
     public function galleries(): HasMany
     {
         return $this->hasMany(Gallery::class);
+    }
+
+    public function galleryImages(): HasManyThrough
+    {
+        return $this->hasManyThrough(GalleryImage::class, Gallery::class);
+    }
+
+    public function storageUsedBytes(): int
+    {
+        return (int) $this->galleryImages()->sum('file_size');
     }
 
     public function isAdmin(): bool
@@ -43,6 +61,7 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'storage_quota_bytes' => 'integer',
         ];
     }
 

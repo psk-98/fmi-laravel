@@ -19,10 +19,11 @@ class RegisterUserController extends Controller
         $user = User::create($request->validated());
 
         $token = $user->createToken('frontend')->plainTextToken;
+        $user->loadSum('galleryImages as storage_used_bytes', 'file_size');
 
         return response()->json([
             'token' => $token,
-            'user' => new UserResource($user)
+            'user' => new UserResource($user),
         ], 201);
     }
 }
