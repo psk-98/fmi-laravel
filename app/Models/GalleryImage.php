@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Domain\Gallery\Enums\ModerationStatus;
 use App\Domain\Gallery\Enums\ProcessingStatus;
+use App\Jobs\ProcessGalleryImage;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

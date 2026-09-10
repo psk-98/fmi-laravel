@@ -14,8 +14,8 @@ class GalleryImageEmbedding extends Model
 {
     protected $attributes = [
         'face_index' => 0,
-        'model' => 'clip-vit-base-patch32',
-        'dimensions' => 512,
+        'model' => 'opencv-sface-2021dec-v1',
+        'dimensions' => 128,
     ];
 
     public function galleryImage(): BelongsTo

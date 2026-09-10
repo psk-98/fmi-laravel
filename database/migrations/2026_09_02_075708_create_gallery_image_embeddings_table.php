@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private const EMBEDDING_DIMENSIONS = 512;
+    private const EMBEDDING_DIMENSIONS = 128;
     /**
      * Run the migrations.
      */
