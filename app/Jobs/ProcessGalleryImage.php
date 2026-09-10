@@ -27,7 +27,7 @@ class ProcessGalleryImage implements ShouldBeUnique, ShouldQueue
         //
     }
 
-    public function uniquieId(): string
+    public function uniqueId(): string
     {
         return (string) $this->galleryImageId;
     }
