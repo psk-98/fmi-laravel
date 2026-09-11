@@ -10,7 +10,7 @@ services:
   app:
     build:
       args:
-        user: fmi-laravel
+        user: fmi-app
         uid: 1000
       context: ./.docker/app
     restart: unless-stopped
@@ -19,21 +19,34 @@ services:
       - "127.0.0.1:8000:8000"
     volumes:
       - ./:/app
-      # - ./.docker/app/php.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - fmi-laravel
+    depends_on:
+      db:
+        condition: service_healthy
 
-  # vetro-whatsapp-web:
-  #   image: nginx
-  #   container_name: vetro-whatsapp-web
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8000:80"
-  #   networks:
-  #     - vetro-whatsapp
-  #   volumes:
-  #     - ./:/var/www
-  #     - ./.docker/nginx:/etc/nginx/conf.d
+  queues:
+    container_name: fmi-queue
+    build:
+      args:
+        user: fmi-app
+        uid: 1000
+      context: ./.docker/app
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    command: >
+      php artisan queue:work database
+            --queue=default
+            --sleep=3
+            --tries=3
+            --timeout=120
+            --max-time=3600
+    networks:
+      - fmi-laravel
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     networks:
@@ -51,3 +64,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       SERVICE_TAGS: dev
       SERVICE_NAME: pg18
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
