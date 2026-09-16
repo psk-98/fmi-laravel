@@ -67,7 +67,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql
     ports:
-      - "127.0.0.1:6543:5432"
+      - "127.0.0.1:6565:5432"
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USERNAME}
