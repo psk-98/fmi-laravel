@@ -1,5 +1,4 @@
-FROM php:8.4-fpm
-
+FROM php:8.4-cli
 
 ARG user
 ARG uid

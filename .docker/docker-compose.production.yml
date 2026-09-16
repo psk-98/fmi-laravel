@@ -14,18 +14,28 @@ services:
         uid: 1000
       context: ./.docker/app
     restart: unless-stopped
-    working_dir: /app
-    ports:
-      - "127.0.0.1:8000:8000"
+    working_dir: /var/www/
+    container_name: fmi-app
     volumes:
-      - ./:/app
+      - ./:/var/www
+      - ./.docker/app/php.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./.docker/app/custom-www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - fmi-laravel
-    depends_on:
-      db:
-        condition: service_healthy
 
-  queues:
+  web:
+    image: nginx:alpine
+    container_name: fmi-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8065:80"
+    networks:
+      - fmi-laravel
+    volumes:
+      - ./:/var/www
+      - ./.docker/nginx:/etc/nginx/conf.d
+
+  queue:
     container_name: fmi-queue
     build:
       args:
@@ -34,7 +44,7 @@ services:
       context: ./.docker/app
     restart: unless-stopped
     volumes:
-      - ./:/app
+      - .:/var/www/html
     command: >
       php artisan queue:work database
             --queue=default
@@ -57,7 +67,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql
     ports:
-      - "127.0.0.1:6543:5432"
+      - "127.0.0.1:6565:5432"
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USERNAME}
