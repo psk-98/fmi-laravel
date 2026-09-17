@@ -37,7 +37,7 @@ services:
     volumes:
       - ./:/var/www
       - ./.docker/nginx:/etc/nginx/conf.d
-    depends: app
+    # depends_on: app
 
   queue:
     container_name: fmi-queue
