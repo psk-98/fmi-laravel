@@ -22,6 +22,9 @@ services:
       - ./.docker/app/custom-www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - fmi-laravel
+    depends_on:
+      db:
+        condition: service_healthy
 
   web:
     image: nginx:alpine
@@ -34,6 +37,7 @@ services:
     volumes:
       - ./:/var/www
       - ./.docker/nginx:/etc/nginx/conf.d
+    depends: app
 
   queue:
     container_name: fmi-queue
@@ -44,7 +48,7 @@ services:
       context: ./.docker/app
     restart: unless-stopped
     volumes:
-      - .:/var/www/html
+      - .:/var/www
     command: >
       php artisan queue:work database
             --queue=default
