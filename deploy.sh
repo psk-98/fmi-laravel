@@ -5,13 +5,8 @@ set -e
 
 echo "🚀 Starting deployment"
 
+
 echo "⬇️ Go to project folder"
-
-echo "Current user:"
-whoami
-
-echo "Backend directory:"
-echo "$BACKEND_DIR"
 
 cd /home/lullaby/sites/fmi-laravel
 
@@ -56,4 +51,4 @@ sudo docker compose exec -T "app" php artisan optimize
 
 echo "👷 Restarting queues"
 
-docker compose exec -T "queue" php artisan queue:restart
+sudo docker compose exec -T "queue" php artisan queue:restart
