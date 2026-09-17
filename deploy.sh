@@ -7,7 +7,7 @@ echo "🚀 Starting deployment"
 
 echo "⬇️ Go to project folder"
 
-cd "$BACKEND_DIR"
+cd /home/lullaby/sites/fmi-laravel
 
 echo "⬇️ Pull latest code"
 
