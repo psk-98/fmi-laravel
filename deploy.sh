@@ -31,7 +31,7 @@ echo "📦 Installing dependencies"
 docker compose exec -T "app" composer install \
 --no-dev \
 --optimize-autoloader \
-&& bun install --frozen-lockfile
+&& bun install
 
 
 echo "🛠 Running migrations"
