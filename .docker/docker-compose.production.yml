@@ -22,6 +22,11 @@ services:
       - ./.docker/app/custom-www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - fmi-laravel
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm -t"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
       db:
         condition: service_healthy
@@ -37,7 +42,9 @@ services:
     volumes:
       - ./:/var/www
       - ./.docker/nginx:/etc/nginx/conf.d
-    depends: app
+    depends_on:
+      app:
+        condition: service_healthy
 
   queue:
     container_name: fmi-queue
