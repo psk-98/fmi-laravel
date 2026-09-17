@@ -5,6 +5,9 @@ set -e
 
 echo "🚀 Starting deployment"
 
+echo "⬇️ Go to project folder"
+
+cd "$BACKEND_DIR"
 
 echo "⬇️ Pull latest code"
 
