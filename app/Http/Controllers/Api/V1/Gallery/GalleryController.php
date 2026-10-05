@@ -59,8 +59,8 @@ class GalleryController extends Controller
             'user:id,name',
             'images' => fn($query) => $query
                 ->withCount('embeddings')
-                ->where('is_public', true)
-                ->where('moderation_status', 'approved')
+                // ->where('is_public', true)
+                // ->where('moderation_status', 'approved')
                 ->where('processing_status', 'processed')
                 ->latest(),
         ])->loadCount('images');

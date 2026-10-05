@@ -24,8 +24,8 @@ class GalleryImageController extends Controller
         $images = $gallery->images()
             ->with('gallery.user')
             ->withCount('embeddings')
-            ->where('is_public', true)
-            ->where('moderation_status', 'approved')
+            // ->where('is_public', true)
+            // ->where('moderation_status', 'approved')
             ->where('processing_status', 'processed')
             ->latest()
             ->paginate();
@@ -62,8 +62,8 @@ class GalleryImageController extends Controller
         $galleryImage->load('gallery.user')->loadCount('embeddings');
 
         abort_unless(
-            $galleryImage->is_public
-                && $galleryImage->processing_status->value === 'processed'
+            // $galleryImage->is_public &&
+            $galleryImage->processing_status->value === 'processed'
                 && $galleryImage->gallery->visibility === Gallery::VISIBILITY_PUBLIC,
             404,
         );

@@ -32,7 +32,7 @@ class GalleryImageSearchController extends Controller
             ->queryMany(
                 embeddings: $embeddings,
                 user: $request->user(),
-                includePrivate: false,
+                includePrivate: true,
                 galleryId: $gallery->id,
             )
             ->limit((int) ($validated['limit'] ?? 20))
@@ -60,7 +60,7 @@ class GalleryImageSearchController extends Controller
 
             return collect($faces)
                 ->pluck('embedding')
-                ->filter(fn (mixed $embedding): bool => is_array($embedding) && $embedding !== [])
+                ->filter(fn(mixed $embedding): bool => is_array($embedding) && $embedding !== [])
                 ->values()
                 ->all();
         }
@@ -74,7 +74,7 @@ class GalleryImageSearchController extends Controller
 
         return $source->embeddings
             ->pluck('embedding')
-            ->filter(fn (mixed $embedding): bool => is_array($embedding) && $embedding !== [])
+            ->filter(fn(mixed $embedding): bool => is_array($embedding) && $embedding !== [])
             ->values()
             ->all();
     }
