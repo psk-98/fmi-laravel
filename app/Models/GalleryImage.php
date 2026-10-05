@@ -20,7 +20,7 @@ class GalleryImage extends Model
         'disk' => 'public',
         'processing_status' => ProcessingStatus::Pending->value,
         'moderation_status' => ModerationStatus::Pending->value,
-        'is_public' => false,
+        'is_public' => true,
     ];
 
     protected function casts(): array
