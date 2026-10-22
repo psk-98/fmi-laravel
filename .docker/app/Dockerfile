@@ -1,4 +1,4 @@
-FROM php:8.4-fpm
+FROM php:8.4.27-fpm
 
 ARG user
 ARG uid
@@ -40,7 +40,7 @@ RUN docker-php-ext-configure gd \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
-        chown -R $user:$user /home/$user
+    chown -R $user:$user /home/$user
 
 WORKDIR /var/www
 
